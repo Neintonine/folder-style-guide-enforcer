@@ -1,8 +1,10 @@
-﻿namespace FolderStyleGuideEnforcer.FileProviders;
+﻿using FolderStyleGuideEnforcer.FileProviders;
+
+namespace FSGE_CLI;
 
 internal class FileProviderFactory
 {
-    public IEnumerable<string> Get(CheckCommand.Settings settings)
+    public IProvider Get(CheckCommand.Settings settings)
     {
         string searchDirectory = settings.Directory ?? Directory.GetCurrentDirectory();
         return new DirectoryProvider(searchDirectory);

@@ -2,22 +2,29 @@
 
 namespace FolderStyleGuideEnforcer.FileProviders;
 
-public class DirectoryProvider: IEnumerable<string>
+public class DirectoryProvider : IProvider
 {
+    private readonly string _path;
     private IEnumerable<string> _directoryEnum;
 
     public DirectoryProvider(string path)
     {
-        _directoryEnum = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories);
+        this._path = path;
+        this._directoryEnum = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories);
+    }
+
+    public string GetAbsolutePath(string relativePath)
+    {
+        return this._path + relativePath;
     }
 
     public IEnumerator<string> GetEnumerator()
     {
-        return _directoryEnum.GetEnumerator();
+        return new DirectoryProviderEnumerator(this._path, this._directoryEnum.GetEnumerator());
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return GetEnumerator();
+        return this.GetEnumerator();
     }
 }
