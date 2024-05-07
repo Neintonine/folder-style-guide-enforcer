@@ -24,7 +24,7 @@ internal class CheckCommand : AsyncCommand<CheckCommand.Settings>
         [CommandOption("-c|--config")]
         public string? ConfigurationPath { get; init; }
         
-        [Description("Path to the plugin directory")]
+        [Description("Paths to the plugins; Seperate by semicolon")]
         [CommandOption("--pluginDir")]
         public string? PluginDirectory { get; init; }
 
@@ -42,14 +42,7 @@ internal class CheckCommand : AsyncCommand<CheckCommand.Settings>
         Dictionary<string, RuleChecker.Result> results = new();
         int count = provider.Count();
 
-        string? directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-        if (directory == null)
-        {
-            throw new Exception("Couldn't find directory for plugins");
-        }
-        
-        PluginHandler pluginHandler = new PluginHandler(settings.PluginDirectory ?? Path.Combine(directory, "plugins"));
+        PluginHandler pluginHandler = GetPluginHandler(settings);
         
         await AnsiConsole.Progress()
             .AutoRefresh(true) // Turn off auto refresh
@@ -92,6 +85,24 @@ internal class CheckCommand : AsyncCommand<CheckCommand.Settings>
         AnsiConsole.Write(tree);
         
         return 0;
+    }
+
+    private PluginHandler GetPluginHandler(Settings settings)
+    {
+        if (settings.PluginDirectory == null)
+        {
+            string? directory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "plugins");
+
+            if (directory == null)
+            {
+                throw new Exception("Couldn't find directory for plugins");
+            }
+
+            return new PluginHandler(new [] { directory });
+        }
+
+        string[] pluginDirectories = settings.PluginDirectory.Split(";");
+        return new PluginHandler(pluginDirectories);
     }
 
     private Tree GetTreeFromResults(Dictionary<string,RuleChecker.Result> results)

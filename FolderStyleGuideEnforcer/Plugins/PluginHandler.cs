@@ -2,27 +2,30 @@
 
 public sealed class PluginHandler
 {
-    private readonly string _pluginPath;
+    private readonly string[] _pluginPaths;
     
-    public PluginHandler(string pluginPath)
+    public PluginHandler(string[] pluginPaths)
     {
-        this._pluginPath = pluginPath;
+        this._pluginPaths = pluginPaths;
     }
 
     public IReadOnlyList<Plugin> DiscoverPlugins(bool autoload = false)
     {
         IList<Plugin> plugins = new List<Plugin>();
 
-        foreach (string file in Directory.EnumerateFiles(this._pluginPath, searchPattern: "*.dll", SearchOption.AllDirectories))
+        foreach (string path in _pluginPaths)
         {
-            Plugin plugin = new Plugin(file);
-
-            if (autoload)
+            foreach (string file in Directory.EnumerateFiles(path, searchPattern: "*.dll", SearchOption.AllDirectories))
             {
-                plugin.Load();
+                Plugin plugin = new Plugin(file);
+
+                if (autoload)
+                {
+                    plugin.Load();
+                }
+                
+                plugins.Add(plugin);
             }
-            
-            plugins.Add(plugin);
         }
 
         return (IReadOnlyList<Plugin>)plugins;
