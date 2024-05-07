@@ -22,12 +22,11 @@ namespace FSGE_JustinWasilenkoUnity
         {
             List<RuleEntry> rules = new List<RuleEntry>()
             {
-                new RuleEntry(new CamelCase(), RuleResult.Error),
+                new RuleEntry(new PascalCase(), RuleResult.Error),
                 new RuleEntry(new NoSpaces(), RuleResult.Error),
                 new RuleEntry(new NoUnicode(), RuleResult.Error),
                 new RuleEntry(new SceneInLevelFolder(), RuleResult.Error),
                 new RuleEntry(new NoRedundantFolders(), RuleResult.Error),
-                new RuleEntry(new ScriptsCorrectFolder(), RuleResult.Error),
                 new RuleEntry(new OnlyScriptsFolder(), RuleResult.Error)
             };
 

@@ -3,7 +3,7 @@ using FolderStyleGuideEnforcer.Rules;
 
 namespace FSGE_JustinWasilenkoUnity.Rules
 {
-    public sealed class CamelCase : Rule
+    public sealed class PascalCase : Rule
     {
         private static string[] DELIMITERS = new string[]
         {
@@ -12,15 +12,25 @@ namespace FSGE_JustinWasilenkoUnity.Rules
 
         private Regex _regex;
         
-        public CamelCase()
+        public PascalCase()
         {
-            string delimiters = String.Join("", CamelCase.DELIMITERS);
+            string delimiters = String.Join("", PascalCase.DELIMITERS);
             this._regex = new Regex($"([{delimiters}][a-z])");
         }
         
         public override string GetInternalName()
         {
             return $"{Constants.PREFIX}/camel-case";
+        }
+
+        public override string GetDisplayName()
+        {
+            return "Filenames and Directories should be pascal case";
+        }
+
+        public override string GetDescription()
+        {
+            return "see: https://github.com/justinwasilenko/Unity-Style-Guide?tab=readme-ov-file#always-use-pascalcase";
         }
 
         public override bool AppliesTo(RuleCheckContext context)

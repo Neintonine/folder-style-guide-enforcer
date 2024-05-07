@@ -17,6 +17,17 @@ public sealed class NoRedundantFolders: Rule
         return Constants.PREFIX + "/no-redundant-folders";
     }
 
+    public override string GetDisplayName()
+    {
+        return "Folders like Assets, Meshes, Textures, etc. are redundant";
+    }
+
+    public override string GetDescription()
+    {
+        return
+            "see: https://github.com/justinwasilenko/Unity-Style-Guide?tab=readme-ov-file#26-do-not-create-folders-called-assets-or-assettypes";
+    }
+
     public override bool AppliesTo(RuleCheckContext context)
     {
         return true;

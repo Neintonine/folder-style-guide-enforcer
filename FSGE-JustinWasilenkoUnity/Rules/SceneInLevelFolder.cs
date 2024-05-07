@@ -9,6 +9,16 @@ public sealed class SceneInLevelFolder: Rule
         return Constants.PREFIX + "/scene-in-levels-folder";
     }
 
+    public override string GetDisplayName()
+    {
+        return "Scenes should only live in a 'Levels'-folders";
+    }
+
+    public override string GetDescription()
+    {
+        return "see: https://github.com/justinwasilenko/Unity-Style-Guide?tab=readme-ov-file#24-all-scene-files-belong-in-a-folder-called-levels";
+    }
+
     public override bool AppliesTo(RuleCheckContext context)
     {
         return context.RelativePath.EndsWith(".unity");
