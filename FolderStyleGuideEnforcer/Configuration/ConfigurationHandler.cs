@@ -4,6 +4,15 @@ namespace FolderStyleGuideEnforcer.Configuration;
 
 public sealed class ConfigurationHandler
 {
+    public Configuration CreateEmpty()
+    {
+        return new Configuration(
+            Array.Empty<string>(),
+            new Dictionary<string, string>(),
+            Array.Empty<string>()
+        );
+    }
+    
     public Configuration GetFromDirectory(string path)
     {
         string expectedPath = Path.Combine(path, ".fsge-config");
@@ -15,11 +24,7 @@ public sealed class ConfigurationHandler
     {
         if (!File.Exists(configPath))
         {
-            return new Configuration(
-                Array.Empty<string>(),
-                new Dictionary<string, string>(),
-                Array.Empty<string>()
-            );
+            throw MissingFileException.WithPath(configPath);
         }
 
         string config = File.ReadAllText(configPath);
