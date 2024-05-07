@@ -1,4 +1,5 @@
-﻿using FolderStyleGuideEnforcer.Rules;
+﻿using System.Text.RegularExpressions;
+using FolderStyleGuideEnforcer.Rules;
 
 namespace FSGE_JustinWasilenkoUnity.Rules;
 
@@ -7,6 +8,11 @@ public sealed class ScriptsCorrectFolder: Rule
     public override string GetInternalName()
     {
         return Constants.PREFIX + "/scripts-correct-folder";
+    }
+
+    public override string GetDescription()
+    {
+        return "Scripts files should only live in 'Scripts' folders";
     }
 
     public override bool AppliesTo(RuleCheckContext context)

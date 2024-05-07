@@ -20,7 +20,7 @@ namespace FSGE_JustinWasilenkoUnity
 
         public override IReadOnlyCollection<RuleEntry> GetRules()
         {
-            return new[]
+            List<RuleEntry> rules = new List<RuleEntry>()
             {
                 new RuleEntry(new CamelCase(), RuleResult.Error),
                 new RuleEntry(new NoSpaces(), RuleResult.Error),
@@ -30,6 +30,10 @@ namespace FSGE_JustinWasilenkoUnity
                 new RuleEntry(new ScriptsCorrectFolder(), RuleResult.Error),
                 new RuleEntry(new OnlyScriptsFolder(), RuleResult.Error)
             };
+
+            rules.AddRange(AssetNamingConvention.GetRules());
+            
+            return rules;
         }
 
         public override IReadOnlyCollection<IFileValidator> GetValidators()
