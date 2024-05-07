@@ -36,9 +36,18 @@ internal class CheckCommand : AsyncCommand<CheckCommand.Settings>
     public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
     {
         IProvider provider = new FileProviderFactory().Get(settings);
-
-        Configuration config = this.GetConfiguration(settings);
-
+        
+        Configuration config;
+        try
+        {
+            config = this.GetConfiguration(settings);
+        }
+        catch (MissingFileException ex)
+        {
+            AnsiConsole.WriteLine(ex.Message);
+            return 2;
+        }
+        
         Dictionary<string, RuleChecker.Result> results = new();
         int count = provider.Count();
 
@@ -117,17 +126,17 @@ internal class CheckCommand : AsyncCommand<CheckCommand.Settings>
             
             TreeNode pathNode = root.AddNode(result.Key);
 
-            foreach (IRule valueError in result.Value.Errors)
+            foreach (IRule error in result.Value.Errors)
             {
-                pathNode.AddNode($"[red]{valueError.GetDisplayName()} - {valueError.GetDescription()}[/]");
+                pathNode.AddNode($"[red]{error.GetDisplayName()} - {error.GetDescription()}[/]");
             }
-            foreach (IRule valueError in result.Value.Warnings)
+            foreach (IRule warning in result.Value.Warnings)
             {
-                pathNode.AddNode($"[yellow]{valueError.GetDisplayName()} - {valueError.GetDescription()}[/]");
+                pathNode.AddNode($"[yellow]{warning.GetDisplayName()} - {warning.GetDescription()}[/]");
             }
-            foreach (IRule valueError in result.Value.Infos)
+            foreach (IRule info in result.Value.Infos)
             {
-                pathNode.AddNode($"[blue]{valueError.GetDisplayName()} - {valueError.GetDescription()}[/]");
+                pathNode.AddNode($"[blue]{info.GetDisplayName()} - {info.GetDescription()}[/]");
             }
         }
 
