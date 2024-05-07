@@ -15,7 +15,7 @@ public class DirectoryProvider : IProvider
 
     public string GetAbsolutePath(string relativePath)
     {
-        return this._path + relativePath;
+        return Path.Join(this._path, relativePath);
     }
 
     public IEnumerator<string> GetEnumerator()
