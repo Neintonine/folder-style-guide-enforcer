@@ -53,7 +53,7 @@ internal class CheckCommand : AsyncCommand<CheckCommand.Settings>
         Dictionary<string, RuleChecker.Result> results = new();
         int count = provider.Count();
 
-        PluginHandler pluginHandler = this.GetPluginHandler(settings);
+        PluginHandler pluginHandler = new PluginConfigurator().GetHandlerSeperatedBy(settings.PluginDirectory);
         
         await AnsiConsole.Progress()
             .AutoRefresh(true) // Turn off auto refresh
@@ -96,24 +96,6 @@ internal class CheckCommand : AsyncCommand<CheckCommand.Settings>
         AnsiConsole.Write(tree);
         
         return 0;
-    }
-
-    private PluginHandler GetPluginHandler(Settings settings)
-    {
-        if (settings.PluginDirectory == null)
-        {
-            string? directory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "plugins");
-
-            if (directory == null)
-            {
-                throw new Exception("Couldn't find directory for plugins");
-            }
-
-            return new PluginHandler(new [] { directory });
-        }
-
-        string[] pluginDirectories = settings.PluginDirectory.Split(";");
-        return new PluginHandler(pluginDirectories);
     }
 
     private Tree GetTreeFromResults(Dictionary<string,RuleChecker.Result> results)
