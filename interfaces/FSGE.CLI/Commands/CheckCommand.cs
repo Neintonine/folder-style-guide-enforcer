@@ -78,6 +78,11 @@ internal class CheckCommand : AsyncCommand<CheckCommand.Settings>
                 
                 foreach (string path in provider)
                 {
+                    if (path.EndsWith(".fsge-config"))
+                    {
+                        continue;
+                    }
+                    
                     RuleCheckContext ruleCheckContext = new RuleCheckContext(
                         path,
                         provider.GetAbsolutePath(path)
@@ -94,7 +99,10 @@ internal class CheckCommand : AsyncCommand<CheckCommand.Settings>
 
         Tree tree = this.GetTreeFromResults(results);
         AnsiConsole.Write(tree);
-        
+        if (results.Any((value) => value.Value.Errors.Count > 0))
+        {
+            return 1;
+        }
         return 0;
     }
 

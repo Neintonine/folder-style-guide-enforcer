@@ -8,14 +8,19 @@ CommandApp command = new CommandApp();
 
 command.Configure(config =>
 {
-    config.PropagateExceptions();
-
-    config.AddCommand<CheckCommand>("check");
+    config.AddCommand<CheckCommand>("check")
+        .WithDescription("Checks the current working directory against a set of rules specified in a '.fsge-config'.")
+        .WithExample("check", "--dir PATHTODIRECTORY")
+        .WithExample("check",  "--config PATHTOCONFIG");
 
     config.AddBranch("plugins", configurator =>
     {
-        configurator.AddCommand<InstallCommand>("install");
-        configurator.AddCommand<ListCommand>("list");
+        configurator.SetDescription("Offers tools to manage plugins");
+        
+        configurator.AddCommand<InstallCommand>("install")
+            .WithDescription("Installs a plugin");
+        configurator.AddCommand<ListCommand>("list")
+            .WithDescription("Lists available plugins");
     });
 
     config.AddBranch("config", branchConfig =>
@@ -27,9 +32,7 @@ command.Configure(config =>
 
         branchConfig.AddCommand<FSGE.CLI.Commands.Config.ListCommand>("list")
             .WithDescription("Lists the available presets.");
-        
-        
     });
 });
 
-command.Run(args);
+return command.Run(args);

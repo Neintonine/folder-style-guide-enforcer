@@ -6,13 +6,9 @@ using Spectre.Console.Cli;
 
 namespace FSGE.CLI.Commands.Config;
 
-public class ListCommand : Command<ListCommand.Settings>
+public class ListCommand : Command
 {
-    public class Settings: CommandSettings
-    {
-    }
-
-    public override int Execute(CommandContext context, Settings settings)
+    public override int Execute(CommandContext context)
     {
         PluginConfigurator configurator = new PluginConfigurator();
         PluginHandler handler = configurator.GetHandler(null);

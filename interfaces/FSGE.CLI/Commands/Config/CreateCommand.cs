@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
 using FSGE.Framework.Configuration;
+using FSGE.Framework.Plugins;
 using Newtonsoft.Json;
+using Spectre.Console;
 using Spectre.Console.Cli;
 
 namespace FSGE.CLI.Commands.Config;
@@ -14,20 +16,45 @@ public sealed class CreateCommand: Command<CreateCommand.Settings>
         [CommandArgument(0, "[preset]")]
         [Description("If specified, generates a configuration with a specific preset. Call '--list-presets' to view all presets.")]
         public string? Preset { get; init; }
-        
-        [CommandOption("--list-preset")]
-        [Description("If set, instead of creating a configuration, it displays all presets.")]
-        public bool ListPresets { get; init; }
     }
 
     public override int Execute(CommandContext context, Settings settings)
     {
-        Configuration config = new ConfigurationHandler().CreateEmpty();
+        Configuration? config = GetConfiguration(settings);
+        if (config == null)
+        {
+            AnsiConsole.WriteLine($"Couldn't find preset with the name '{settings.Preset}'");
+            
+            return 1;
+        }
+        
         string configString = JsonConvert.SerializeObject(config, Formatting.Indented);
 
         string path = Path.Combine(Environment.CurrentDirectory, ".fsge-config");
         
         File.WriteAllText(path, configString);
         return 0;
+    }
+
+    private Configuration? GetConfiguration(Settings settings)
+    {
+        if (settings.Preset == null)
+        {
+            return new ConfigurationHandler().CreateEmpty();
+        }
+
+        PluginConfigurator configurator = new PluginConfigurator();
+        PluginHandler handler = configurator.GetHandler(null);
+        IReadOnlyList<Plugin> plugins = handler.DiscoverPlugins(true);
+        
+        ConfigurationPresetRepository repo = new ConfigurationPresetRepository();
+        repo.Discover(plugins);
+
+        if (!repo.Has(settings.Preset))
+        {
+            return null;
+        }
+
+        return repo.Get(settings.Preset).GetConfiguration();
     }
 }
