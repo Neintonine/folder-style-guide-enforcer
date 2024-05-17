@@ -24,7 +24,7 @@ public sealed class PluginConfigurator
     {
         if (requestedPluginDirectories == null)
         {
-            string? directory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "plugins");
+            string? directory = GetDefaultPath();
 
             if (directory == null)
             {

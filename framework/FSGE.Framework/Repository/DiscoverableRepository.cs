@@ -5,7 +5,7 @@ namespace FSGE.Framework.Repository;
 public class DiscoverableRepository<T>
     where T : IDiscoverable
 {
-    private readonly Dictionary<string, T> _foundModels = new Dictionary<string, T>();
+    protected readonly Dictionary<string, T> FoundModels = new Dictionary<string, T>();
 
     public int Discover(IReadOnlyList<Plugin> plugins)
     {
@@ -13,7 +13,7 @@ public class DiscoverableRepository<T>
         {
             this.Discover(plugin);
         }
-        return this._foundModels.Count;
+        return this.FoundModels.Count;
     }
 
     public void Discover(Plugin plugin)
@@ -32,22 +32,22 @@ public class DiscoverableRepository<T>
     public void Add(T item)
     {
         string internalName = item.GetInternalName();
-        this._foundModels.Add(internalName, item); 
+        this.FoundModels.Add(internalName, item); 
     }
 
     public bool Has(string value)
     {
-        return this._foundModels.ContainsKey(value);
+        return this.FoundModels.ContainsKey(value);
     }
 
     public T Get(string value)
     {
-        if (!this._foundModels.ContainsKey(value))
+        if (!this.FoundModels.ContainsKey(value))
         {
             return default;
         }
 
-        return this._foundModels[value];
+        return this.FoundModels[value];
     }
 
     private void HandleType(Type type)
